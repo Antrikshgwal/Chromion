@@ -1,3 +1,4 @@
+"use client";
 import {
   TrendingUp,
   Upload,
@@ -6,6 +7,7 @@ import {
   CheckCircle,
   Wallet,
 } from "lucide-react";
+import {useState} from "react";
 
 interface Invoice {
   id: string;
@@ -44,7 +46,60 @@ const sampleInvoices: Invoice[] = [
   },
 ];
 
-const BusinessDashboard = () => (
+const BusinessDashboard = () => {
+
+  const [file, setFile] = useState<File>();
+  const [url, setUrl] = useState<null | {
+    fileUrl: string;
+    metadataUrl: string;
+    message: string;
+  }>(null);
+
+  const [uploading, setUploading] = useState(false);
+  const [companyName, setCompanyName] = useState("");
+  const [invoiceAmount, setInvoiceAmount] = useState("");
+  const [askAmount, setAskAmount] = useState("");
+
+  const uploadFile = async () => {
+    try {
+      if (!file) {
+        alert("No file selected");
+        return;
+      }
+
+      setUploading(true);
+
+      const data = new FormData();
+      data.set("file", file);
+
+      // Attach other fields in JSON format
+      const metadata = JSON.stringify({
+        companyName,
+        invoiceAmount,
+        askAmount,
+      });
+      data.set("metadata", metadata);
+
+      const uploadRequest = await fetch("/api/files", {
+        method: "POST",
+        body: data,
+      });
+
+      const signedUrl = await uploadRequest.json();
+      setUrl(signedUrl);
+      setUploading(false);
+    } catch (e) {
+      console.error(e);
+      setUploading(false);
+      alert("Trouble uploading file");
+    }
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(e.target?.files?.[0]);
+  };
+
+  return (
   <div className="min-h-screen bg-gray-50 text-black">
     <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -106,16 +161,94 @@ const BusinessDashboard = () => (
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1">
           <div className="bg-white p-6 rounded-xl shadow-sm">
-            <h3 className="text-lg font-semibold mb-4">Upload New Invoice</h3>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors cursor-pointer">
-              <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm text-gray-600">
-                Drop your invoice here or click to browse
-              </p>
-            </div>
-            <button className="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition-colors">
-              Upload Invoice
-            </button>
+          <h2 className="text-2xl font-bold mb-4 text-center">Submit Invoice</h2>
+
+<div className="flex flex-col gap-4">
+  <div>
+    <label htmlFor="business" className="block font-medium mb-1">
+      Company Name
+    </label>
+    <input
+      type="text"
+      id="business"
+      placeholder="Your company name"
+      value={companyName}
+      onChange={(e) => setCompanyName(e.target.value)}
+      className="w-full border border-gray-300 rounded-md p-2"
+    />
+  </div>
+
+  <div>
+    <label htmlFor="InvoiceAmt" className="block font-medium mb-1">
+      Invoice Amount
+    </label>
+    <input
+      type="text"
+      id="InvoiceAmt"
+      placeholder="Enter invoice amount"
+      value={invoiceAmount}
+      onChange={(e) => setInvoiceAmount(e.target.value)}
+      className="w-full border border-gray-300 rounded-md p-2"
+    />
+  </div>
+
+  <div>
+    <label htmlFor="askAmt" className="block font-medium mb-1">
+      Amount Asked
+    </label>
+    <input
+      type="text"
+      id="askAmt"
+      placeholder="Enter the lend amount"
+      value={askAmount}
+      onChange={(e) => setAskAmount(e.target.value)}
+      className="w-full border border-gray-300 rounded-md p-2"
+    />
+  </div>
+
+  <div>
+    <label htmlFor="file" className="block font-medium mb-1">
+      Upload Invoice
+    </label>
+    <input
+      type="file"
+      id="file"
+      onChange={handleChange}
+      accept=".pdf,.jpg,.jpeg,.png"
+      className="w-full"
+    />
+  </div>
+
+  <button
+    type="button"
+    onClick={uploadFile}
+    disabled={uploading}
+    className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition disabled:opacity-50"
+  >
+    {uploading ? "Uploading..." : "Submit"}
+  </button>
+
+  {url && (
+<div className="mt-4 text-sm text-green-600 break-all">
+<p><strong>Message:</strong> {url.message}</p>
+<p>
+<strong>File URL:</strong>{" "}
+<a href={url.fileUrl} target="_blank" className="underline text-blue-600">
+{url.fileUrl}
+</a>
+</p>
+<p>
+<strong>Metadata URL:</strong>{" "}
+<a href={url.metadataUrl} target="_blank" className="underline text-blue-600">
+{url.metadataUrl}
+</a>
+</p>
+</div>
+)}
+
+</div>
+
+
           </div>
         </div>
         <div className="lg:col-span-2">
@@ -167,7 +300,7 @@ const BusinessDashboard = () => (
         </div>
       </div>
     </div>
-  </div>
-);
+  </div>)
+};
 
 export default BusinessDashboard;

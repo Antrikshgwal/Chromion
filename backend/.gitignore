@@ -13,3 +13,4 @@ docs/
 # Dotenv file
 .env
 lib
+package-lock.json
