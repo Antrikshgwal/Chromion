@@ -1,66 +1,53 @@
-## Foundry
+contract address is `0xd5e4a7B1F649603fb87E5635B168c003E4FacE83` on polygon amoy testnet
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+-   `mintWithSignature`: This is the most important function for your platform.
 
-Foundry consists of:
+    -   How to use: Your backend server, acting as the contract owner, will generate a signed payload for a verified user. This payload includes who the NFT is for (`_req.to`), its metadata (`_req.uri`), a price (`_req.pricePerToken`), etc. The user then takes this payload and the generated `_signature` and submits them here to mint their NFT. The user pays the gas for this transaction[3](https://portal.thirdweb.com/contracts/design-docs/signature-mint).
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+-   4\. `mintTo`: A direct minting function for administrative use.
 
-## Documentation
+    -   How to use: As the contract owner, you can call this directly to mint an NFT for someone. You would provide the recipient's address (`_to`) and the JSON metadata URL (`_tokenURI`).
 
-https://book.getfoundry.sh/
+-   3\. `burn`: Destroys an NFT, permanently removing it from circulation.
 
-## Usage
+    -   How to use: The owner of an NFT can call this with the `tokenId` to burn their own token.
 
-### Build
+-   1\. `approve` & 10. `setApprovalForAll`: Standard ERC721 functions for marketplace integration.
 
-```shell
-$ forge build
-```
+    -   How to use: To list an NFT on a marketplace like OpenSea, the token owner must first *approve* the marketplace's contract to transfer the token on their behalf. `setApprovalForAll` grants this permission for all NFTs in the collection, which is the standard practice.
 
-### Test
+-   7\. `safeTransferFrom` & 8. `transferFrom`: Standard ERC721 functions to transfer an NFT to another wallet.
 
-```shell
-$ forge test
-```
+-   11\. `setContractURI`: Sets the metadata for the entire collection (e.g., collection name, description, image) that appears on marketplaces.
 
-### Format
+    -   How to use: Provide a URL to a JSON file containing the collection's metadata.
 
-```shell
-$ forge fmt
-```
+-   12\. `setDefaultRoyaltyInfo`: Sets the default royalty percentage for all secondary sales.
 
-### Gas Snapshots
+    -   How to use: Provide the recipient address (`_royaltyRecipient`) and the fee in basis points (`_royaltyBps`). For example, 500 equals a 5% royalty.
 
-```shell
-$ forge snapshot
-```
+-   13\. `setOwner`: Transfers ownership of the entire contract to a new address. This is a highly sensitive function.
 
-### Anvil
+-   14\. `setPrimarySaleRecipient`: Changes the wallet address that receives the funds from initial mints (if you set a price in the `mintWithSignature` payload).
 
-```shell
-$ anvil
-```
 
-### Deploy
+-------------
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
 
-### Cast
+-   1\. `balanceOf`: Shows how many NFTs a specific wallet address (`owner`) owns in this collection.
 
-```shell
-$ cast <subcommand>
-```
+-   15\. `ownerOf`: Shows the wallet address that owns a specific NFT (`tokenId`).
 
-### Help
+-   21\. `tokenURI`: Retrieves the metadata URL for a specific NFT (`tokenId`). This URL points to the JSON file with the NFT's name, image, and attributes.
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+-   24\. `totalSupply`: Shows the total number of NFTs that have been minted in this collection so far.
+
+-   13\. `name` & 20. `symbol`: Returns the name and symbol of your NFT collection that you set during deployment.
+
+-   16\. `owner`: Shows the current owner/admin of the entire smart contract.
+
+-   17\. `primarySaleRecipient`: Shows the address currently set to receive primary sale funds.
+
+-   18\. `royaltyInfo`: Shows the default royalty recipient and percentage for a given sale price.
+
+-   25\. `verify`: This is a powerful helper function for `mintWithSignature`. It allows you to check if a signature and mint request payload are valid *without* sending a transaction and spending gas. This is useful for providing feedback on your website's frontend before the user attempts to mint.
