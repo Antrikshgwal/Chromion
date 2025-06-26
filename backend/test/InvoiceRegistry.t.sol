@@ -2,13 +2,13 @@
 pragma solidity ^0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
-import {InvoiceNFT}  from "../src/InvoiceRegistry.sol";
+import {InvoiceCIDRegistry}  from "../src/InvoiceRegistry.sol";
 
 contract InvoiceRegistryTest is Test {
-    InvoiceNFT public invoiceNFT;
+    InvoiceCIDRegistry public invoiceNFT;
 
     function setUp() public {
-        invoiceNFT = new InvoiceNFT();
+        invoiceNFT = new InvoiceCIDRegistry();
     }
 
 
