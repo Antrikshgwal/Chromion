@@ -98,9 +98,13 @@ const BusinessDashboard = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFile(e.target?.files?.[0]);
   };
-
+function fireConsoleLog(){
+  console.log("ENV FROM FRONTEND:", process.env.NEXT_PUBLIC_MONGODB_URI);
+}
   return (
+
   <div className="min-h-screen bg-gray-50 text-black">
+    <div><button onClick={fireConsoleLog}>click here</button></div>
     <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
