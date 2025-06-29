@@ -1,4 +1,9 @@
 "use client";
+import { ethers } from "ethers";
+import ABI from "../abi.json"
+import { useWallet } from "../../../hooks /useWallet";
+
+
 import {
   TrendingUp,
   Upload,
@@ -7,7 +12,7 @@ import {
   CheckCircle,
   Wallet,
 } from "lucide-react";
-import {useState} from "react";
+import {useState , useEffect} from "react";
 
 interface Invoice {
   id: string;
@@ -48,18 +53,59 @@ const sampleInvoices: Invoice[] = [
 
 const BusinessDashboard = () => {
 
+  const { connectWallet, signer, address
+, isConnected, provider
+    } = useWallet();
+
+
+
+  // const [signer, setSigner] = useState<any>(null);
+  // const [provider, setProvider] = useState<any>(null);
   const [file, setFile] = useState<File>();
+  const [uploading, setUploading] = useState(false);
   const [url, setUrl] = useState<null | {
     fileUrl: string;
     metadataUrl: string;
     message: string;
   }>(null);
-
-  const [uploading, setUploading] = useState(false);
+  const [cid, setCid] = useState<null | {
+    fileCid: string;
+    metadataCid: string;
+  }>(null);
   const [companyName, setCompanyName] = useState("");
   const [invoiceAmount, setInvoiceAmount] = useState("");
   const [askAmount, setAskAmount] = useState("");
 
+  const handleConnect = async () => {
+    await connectWallet();
+  };
+
+  // ✅ Cleanly initializes provider and signer
+  // const initProvider = async () => {
+  //   try {
+  //     if (typeof window !== "undefined" && (window as any).ethereum) {
+  //       const prov = new ethers.BrowserProvider((window as any).ethereum);
+  //       await prov.send("eth_requestAccounts", []);
+  //       const sign = await prov.getSigner();
+  //       setProvider(prov);
+  //       setSigner(sign);
+  //       return sign;
+  //     } else {
+  //       alert("MetaMask not installed");
+  //       return null;
+  //     }
+  //   } catch (err) {
+  //     console.error("Error initializing provider:", err);
+  //     return null;
+  //   }
+  // };
+
+  // ✅ File handler
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFile(e.target?.files?.[0]);
+  };
+
+  // ✅ Main upload flow
   const uploadFile = async () => {
     try {
       if (!file) {
@@ -72,7 +118,6 @@ const BusinessDashboard = () => {
       const data = new FormData();
       data.set("file", file);
 
-      // Attach other fields in JSON format
       const metadata = JSON.stringify({
         companyName,
         invoiceAmount,
@@ -85,26 +130,70 @@ const BusinessDashboard = () => {
         body: data,
       });
 
-      const signedUrl = await uploadRequest.json();
-      setUrl(signedUrl);
-      setUploading(false);
+      const res = await uploadRequest.json();
+
+      if (!uploadRequest.ok) {
+        throw new Error(res.error || "Failed to upload file");
+      }
+
+      setUrl({
+        fileUrl: res.fileUrl,
+        metadataUrl: res.metadataUrl,
+        message: res.message,
+      });
+      setCid({
+        fileCid: res.fileCid,
+        metadataCid: res.metadataCid,
+      });
+
+      console.log("File and metadata uploaded, now storing CID...");
+
+      await storeCid(res.fileCid, res.metadataCid);
     } catch (e) {
-      console.error(e);
-      setUploading(false);
+      console.error("Error during upload:", e);
       alert("Trouble uploading file");
+    } finally {
+      setUploading(false);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(e.target?.files?.[0]);
+  // ✅ Store CID on chain
+  const storeCid = async (fileCid: string, metadataCid: string) => {
+    try {
+      let _signer = signer;
+
+      if (!_signer) {
+        const wallet = await connectWallet();
+        _signer = wallet?.signer ?? null;
+        if (!_signer) {
+          alert("Please connect your wallet first");
+          return;
+        }
+      }
+
+      if (!_signer) {
+        alert("Wallet not connected");
+        return;
+      }
+
+      const contractAddress = "0xD07cd1448570E4E45388B0d9FF5ffddDb59D7218";
+      const contractABI = ABI.abi;
+
+      const contract = new ethers.Contract(contractAddress, contractABI, _signer);
+
+      const tx = await contract.storeCid({ Dcid: metadataCid, Fcid: fileCid });
+      await tx.wait();
+
+      alert("CIDs stored successfully!");
+    } catch (error) {
+      console.error("Error storing CIDs:", error);
+      alert("Failed to store CIDs");
+    }
   };
-function fireConsoleLog(){
-  console.log("ENV FROM FRONTEND:", process.env.NEXT_PUBLIC_MONGODB_URI);
-}
   return (
 
   <div className="min-h-screen bg-gray-50 text-black">
-    <div><button onClick={fireConsoleLog}>click here</button></div>
+
     <header className="bg-white shadow-sm border-b">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
@@ -225,7 +314,11 @@ function fireConsoleLog(){
 
   <button
     type="button"
-    onClick={uploadFile}
+    onClick={async () => {
+      await handleConnect();
+      await uploadFile();
+    }}
+
     disabled={uploading}
     className="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition disabled:opacity-50"
   >
@@ -246,6 +339,9 @@ function fireConsoleLog(){
 <a href={url.metadataUrl} target="_blank" className="underline text-blue-600">
 {url.metadataUrl}
 </a>
+<p><strong>File CID:</strong> {cid?.fileCid}</p>
+<p><strong>Invoice CID:</strong> {cid?.metadataCid}</p>
+<p></p>
 </p>
 </div>
 )}

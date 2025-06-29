@@ -2,17 +2,17 @@
 pragma solidity ^0.8.13;
 
 import {Script, console} from "forge-std/Script.sol";
-import {InvoiceNFT} from "../src/InvoiceRegistry.sol";
+import {InvoiceCIDRegistry} from "../src/InvoiceRegistry.sol";
 
-contract InvoiceRegistryScript is Script {
-    InvoiceNFT public invoiceNFT;
+contract InvoiceCIDRegistryScript is Script {
+    InvoiceCIDRegistry public invoiceCIDRegistry;
 
     function setUp() public {}
 
     function run() public {
         vm.startBroadcast();
 
-        invoiceNFT = new InvoiceNFT();
+        invoiceCIDRegistry = new InvoiceCIDRegistry();
 
         vm.stopBroadcast();
     }

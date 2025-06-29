@@ -29,16 +29,20 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(
             {
                 fileUrl,
+                fileCid,
                 metadataUrl,
+                metadataCid,
                 message: "File and metadata uploaded successfully",
             },
             { status: 200 }
         );
     } catch (e) {
-        console.error("Upload Error:", e);
+    
+        console.error("Upload Error:", e instanceof Error ? e.message : e);
         return NextResponse.json(
-            { error: "Internal Server Error" },
+            { error: e instanceof Error ? e.message : "Internal Server Error" },
             { status: 500 }
         );
     }
+
 }

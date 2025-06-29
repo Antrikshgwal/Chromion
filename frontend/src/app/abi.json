@@ -1,0 +1,218 @@
+{"abi": [
+    {
+        "type": "function",
+        "name": "cids",
+        "inputs": [
+            {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "Dcid",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "Fcid",
+                "type": "string",
+                "internalType": "string"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "getAllCids",
+        "inputs": [],
+        "outputs": [
+            {
+                "name": "",
+                "type": "tuple[]",
+                "internalType": "struct InvoiceCIDRegistry.cid[]",
+                "components": [
+                    {
+                        "name": "Dcid",
+                        "type": "string",
+                        "internalType": "string"
+                    },
+                    {
+                        "name": "Fcid",
+                        "type": "string",
+                        "internalType": "string"
+                    }
+                ]
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "getCidsByAddress",
+        "inputs": [
+            {
+                "name": "_owner",
+                "type": "address",
+                "internalType": "address"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "tuple[]",
+                "internalType": "struct InvoiceCIDRegistry.cid[]",
+                "components": [
+                    {
+                        "name": "Dcid",
+                        "type": "string",
+                        "internalType": "string"
+                    },
+                    {
+                        "name": "Fcid",
+                        "type": "string",
+                        "internalType": "string"
+                    }
+                ]
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "isVerified",
+        "inputs": [
+            {
+                "name": "Cid",
+                "type": "tuple",
+                "internalType": "struct InvoiceCIDRegistry.cid",
+                "components": [
+                    {
+                        "name": "Dcid",
+                        "type": "string",
+                        "internalType": "string"
+                    },
+                    {
+                        "name": "Fcid",
+                        "type": "string",
+                        "internalType": "string"
+                    }
+                ]
+            }
+        ],
+        "outputs": [
+            {
+                "name": "",
+                "type": "bool",
+                "internalType": "bool"
+            }
+        ],
+        "stateMutability": "nonpayable"
+    },
+    {
+        "type": "function",
+        "name": "ownerToCids",
+        "inputs": [
+            {
+                "name": "",
+                "type": "address",
+                "internalType": "address"
+            },
+            {
+                "name": "",
+                "type": "uint256",
+                "internalType": "uint256"
+            }
+        ],
+        "outputs": [
+            {
+                "name": "Dcid",
+                "type": "string",
+                "internalType": "string"
+            },
+            {
+                "name": "Fcid",
+                "type": "string",
+                "internalType": "string"
+            }
+        ],
+        "stateMutability": "view"
+    },
+    {
+        "type": "function",
+        "name": "storeCid",
+        "inputs": [
+            {
+                "name": "Cid",
+                "type": "tuple",
+                "internalType": "struct InvoiceCIDRegistry.cid",
+                "components": [
+                    {
+                        "name": "Dcid",
+                        "type": "string",
+                        "internalType": "string"
+                    },
+                    {
+                        "name": "Fcid",
+                        "type": "string",
+                        "internalType": "string"
+                    }
+                ]
+            }
+        ],
+        "outputs": [],
+        "stateMutability": "nonpayable"
+    },
+    {
+        "type": "event",
+        "name": "InvoiceStored",
+        "inputs": [
+            {
+                "name": "owner",
+                "type": "address",
+                "indexed": true,
+                "internalType": "address"
+            },
+            {
+                "name": "Dcid",
+                "type": "string",
+                "indexed": true,
+                "internalType": "string"
+            },
+            {
+                "name": "Fcid",
+                "type": "string",
+                "indexed": true,
+                "internalType": "string"
+            }
+        ],
+        "anonymous": false
+    },
+    {
+        "type": "event",
+        "name": "InvoiceVerified",
+        "inputs": [
+            {
+                "name": "owner",
+                "type": "address",
+                "indexed": true,
+                "internalType": "address"
+            },
+            {
+                "name": "Dcid",
+                "type": "string",
+                "indexed": true,
+                "internalType": "string"
+            },
+            {
+                "name": "Fcid",
+                "type": "string",
+                "indexed": true,
+                "internalType": "string"
+            }
+        ],
+        "anonymous": false
+    }
+]
+}
