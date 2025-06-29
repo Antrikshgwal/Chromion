@@ -6,7 +6,6 @@ import { useWallet } from "../../../hooks /useWallet";
 
 import {
   TrendingUp,
-  Upload,
   DollarSign,
   Clock,
   CheckCircle,
@@ -256,61 +255,64 @@ const BusinessDashboard = () => {
           <div className="bg-white p-6 rounded-xl shadow-sm">
           <h2 className="text-2xl font-bold mb-4 text-center">Submit Invoice</h2>
 
-<div className="flex flex-col gap-4">
-  <div>
-    <label htmlFor="business" className="block font-medium mb-1">
-      Company Name
-    </label>
-    <input
-      type="text"
-      id="business"
-      placeholder="Your company name"
-      value={companyName}
-      onChange={(e) => setCompanyName(e.target.value)}
-      className="w-full border border-gray-300 rounded-md p-2"
-    />
-  </div>
+              <div className="flex flex-col gap-4">
+                <div>
+                  <label htmlFor="business" className="block font-medium mb-1">
+                    Company Name
+                  </label>
+                  <input
+                    type="text"
+                    id="business"
+                    placeholder="Your company name"
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    className="w-full border border-gray-300 rounded-md p-2"
+                  />
+                </div>
 
-  <div>
-    <label htmlFor="InvoiceAmt" className="block font-medium mb-1">
-      Invoice Amount
-    </label>
-    <input
-      type="text"
-      id="InvoiceAmt"
-      placeholder="Enter invoice amount"
-      value={invoiceAmount}
-      onChange={(e) => setInvoiceAmount(e.target.value)}
-      className="w-full border border-gray-300 rounded-md p-2"
-    />
-  </div>
+                <div>
+                  <label
+                    htmlFor="InvoiceAmt"
+                    className="block font-medium mb-1"
+                  >
+                    Invoice Amount
+                  </label>
+                  <input
+                    type="text"
+                    id="InvoiceAmt"
+                    placeholder="Enter invoice amount"
+                    value={invoiceAmount}
+                    onChange={(e) => setInvoiceAmount(e.target.value)}
+                    className="w-full border border-gray-300 rounded-md p-2"
+                  />
+                </div>
 
-  <div>
-    <label htmlFor="askAmt" className="block font-medium mb-1">
-      Amount Asked
-    </label>
-    <input
-      type="text"
-      id="askAmt"
-      placeholder="Enter the lend amount"
-      value={askAmount}
-      onChange={(e) => setAskAmount(e.target.value)}
-      className="w-full border border-gray-300 rounded-md p-2"
-    />
-  </div>
+                <div>
+                  <label htmlFor="askAmt" className="block font-medium mb-1">
+                    Amount Asked
+                  </label>
+                  <input
+                    type="text"
+                    id="askAmt"
+                    placeholder="Enter the lend amount"
+                    value={askAmount}
+                    onChange={(e) => setAskAmount(e.target.value)}
+                    className="w-full border border-gray-300 rounded-md p-2"
+                  />
+                </div>
 
-  <div>
-    <label htmlFor="file" className="block font-medium mb-1">
-      Upload Invoice
-    </label>
-    <input
-      type="file"
-      id="file"
-      onChange={handleChange}
-      accept=".pdf,.jpg,.jpeg,.png"
-      className="w-full"
-    />
-  </div>
+                <div>
+                  <label htmlFor="file" className="block font-medium mb-1">
+                    Upload Invoice
+                  </label>
+                  <input
+                    type="file"
+                    id="file"
+                    onChange={handleChange}
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    className="w-full"
+                  />
+                </div>
 
   <button
     type="button"
